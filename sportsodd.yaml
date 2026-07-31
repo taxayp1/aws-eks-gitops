@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sportsodds
+  namespace: sportsodds
+  labels:
+    app: sportsodds
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sportsodds
+  template:
+    metadata:
+      labels:
+        app: sportsodds
+    spec:
+      containers:
+        - name: sportsodds
+          image: 897722678706.dkr.ecr.ap-southeast-2.amazonaws.com/sportsodds:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: sportsodds-pg-app
+                  key: uri
+          envFrom:
+            - secretRef:
+                name: sportsodds-secrets
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits:   { cpu: 300m, memory: 256Mi }
+          readinessProbe:
+            httpGet: { path: /api/cache-bust, port: 3000 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /api/cache-bust, port: 3000 }
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sportsodds
+  namespace: sportsodds
+spec:
+  selector:
+    app: sportsodds
+  ports:
+    - port: 80
+      targetPort: 3000
+  type: ClusterIP

@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sportsodds-racing
+  namespace: sportsodds
+spec:
+  schedule: "*/5 6-22 * * *"
+  timeZone: "Australia/Brisbane"
+  startingDeadlineSeconds: 120
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 120
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: sportsodds-racing
+              image: 897722678706.dkr.ecr.ap-southeast-2.amazonaws.com/sportsodds:latest
+              command: ["node", "racingFetch.js"]
+              env:
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: sportsodds-pg-app
+                      key: uri
+              envFrom:
+                - secretRef:
+                    name: sportsodds-secrets
+              resources:
+                requests: { cpu: 50m, memory: 128Mi }
+                limits:   { cpu: 300m, memory: 256Mi }
