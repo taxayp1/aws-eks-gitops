@@ -28,6 +28,8 @@ spec:
                 secretKeyRef:
                   name: sportsodds-pg-app
                   key: uri
+            - name: NODE_TLS_REJECT_UNAUTHORIZED
+              value: "0"
           envFrom:
             - secretRef:
                 name: sportsodds-secrets
