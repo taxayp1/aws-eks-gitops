@@ -21,6 +21,8 @@ spec:
               image: 897722678706.dkr.ecr.ap-southeast-2.amazonaws.com/sportsodds:latest
               command: ["node", "cronFetch.js"]
               env:
+                - name: NODE_TLS_REJECT_UNAUTHORIZED
+                  value: "0"
                 - name: DATABASE_URL
                   valueFrom:
                     secretKeyRef:
