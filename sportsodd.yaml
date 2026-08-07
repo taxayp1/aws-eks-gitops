@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: sportsodds
-          image: 897722678706.dkr.ecr.ap-southeast-2.amazonaws.com/sportsodds:latest
+          image: 897722678706.dkr.ecr.ap-southeast-2.amazonaws.com/sportsodds:887543f8
           ports:
             - containerPort: 3000
           env:
