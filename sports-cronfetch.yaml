@@ -18,7 +18,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: sportsodds-fetch
-              image: 897722678706.dkr.ecr.ap-southeast-2.amazonaws.com/sportsodds:67850610
+              image: 897722678706.dkr.ecr.ap-southeast-2.amazonaws.com/sportsodds:9032e452
               command: ["node", "cronFetch.js"]
               env:
                 - name: NODE_TLS_REJECT_UNAUTHORIZED
