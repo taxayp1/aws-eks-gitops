@@ -19,7 +19,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: sportsodds-racing
-              image: 897722678706.dkr.ecr.ap-southeast-2.amazonaws.com/sportsodds:b87ccdd1
+              image: 897722678706.dkr.ecr.ap-southeast-2.amazonaws.com/sportsodds:51dd0dcf
               command: ["node", "racingFetch.js"]
               env:
                 - name: NODE_TLS_REJECT_UNAUTHORIZED
