@@ -21,3 +21,25 @@ which triggers a deployment — no manual `kubectl apply`.
 | `external-secret-app.yaml` | Pulls application API keys from Secrets Manager |
 
 ## How it fits together
+
+CodePipeline builds + scans image ──► pushes to ECR ──► bumps tag in this repo
+│
+ArgoCD (watching this repo) ──► deploys to EKS
+│
+External Secrets Operator ──► AWS Secrets Manager ──► K8s secrets ──► pods
+│
+app pods ──► RDS PostgreSQL (SSL)
+
+
+## Design notes
+
+- **No plaintext secrets** — manifests reference secret *names* in AWS Secrets Manager
+  via External Secrets Operator; no credential values are committed here.
+- **ClusterSecretStore** (not namespaced SecretStore) — required so the store can
+  reference the ESO service account in a different namespace via IRSA.
+- **RDS SSL** — the app connects to RDS with SSL enforced (`NODE_TLS_REJECT_UNAUTHORIZED`
+  handling for the RDS CA), which the homelab's self-managed PostgreSQL did not require.
+
+## Related
+
+- **Infrastructure (Terraform):** [aws-eks-terraform-infra](https://github.com/taxayp1/aws-eks-terraform-infra)
